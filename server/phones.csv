@@ -1,0 +1,11 @@
+brand,series,model,releaseYear,displaySize,resolution,displayType,mainCamera,selfieCamera,processor,ram,storage,battery,price,inStock,images
+Samsung,Galaxy S,S21,2021,6.2,1080x2400,Dynamic AMOLED,12 MP,10 MP,Exynos 2100,8 GB,128 GB,4000 mAh,799,Yes,/img/download.jpg
+Apple,iPhone,13 Pro,2021,6.1,1170x2532,Super Retina XDR,12 MP,12 MP,A15 Bionic,6 GB,128 GB,3095 mAh,999,Yes,/img/13pro.jpg
+Xiaomi,Redmi,Note 10 Pro,2021,6.67,1080x2400,AMOLED,108 MP,16 MP,Snapdragon 732G,6 GB,64 GB,5020 mAh,279,Yes,/img/note10pro.jpg
+Google,Pixel,6,2021,6.4,1080x2340,AMOLED,50 MP,8 MP,Google Tensor,8 GB,128 GB,4614 mAh,599,Yes,/img/pixel6.jpg
+OnePlus,Nord 2,2021,2021,6.43,1080x2400,Fluid AMOLED,50 MP,32 MP,Dimensity 1200,8 GB,128 GB,4500 mAh,399,Yes,/img/nord2.jpg
+Huawei,P40 Pro,2020,2020,6.58,1200x2640,OLED,50 MP,32 MP,Kirin 990 5G,8 GB,256 GB,4200 mAh,899,Yes,/img/p40pro.jpg
+Oppo,Find X3 Pro,2021,2021,6.7,1440x3216,LTPO AMOLED,50 MP,32 MP,Snapdragon 888,12 GB,256 GB,4500 mAh,1099,Yes,/img/findx3pro.jpg
+Sony,Xperia 1 III,2021,2021,6.5,1644x3840,OLED,12 MP,8 MP,Snapdragon 888,12 GB,256 GB,4500 mAh,1199,Yes,/img/xperia1iii.jpg
+Realme,GT,2021,2021,6.43,1080x2400,S-AMOLED,64 MP,16 MP,Snapdragon 888,8 GB,128 GB,4500 mAh,499,Yes,/img/realmegt.jpg
+Vivo,X60 Pro,2021,2021,6.56,1080x2376,AMOLED,48 MP,32 MP,Exynos 1080,12 GB,256 GB,4200 mAh,749,Yes,/img/x60pro.jpg
