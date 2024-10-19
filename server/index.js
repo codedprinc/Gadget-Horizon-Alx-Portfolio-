@@ -25,12 +25,20 @@ app.get('/', (req, res) => {
 
 
 //Database connector
-mongoose
-    .connect(process.env.MONGODB_URI)
+mongoose.connect(process.env.MONGODB_URI)
     .then(() => {
         console.log('App connected to database');
-        app.listen(process.env.PORT, () => {
-            console.log(`App is listening to port: ${process.env.PORT}`);
-        });
     })
-    .catch((err) => { console.log(err) });
+    .catch((error) => {
+        console.log(error);
+    });
+
+// Only start the server if this file is run directly (not imported)
+if (process.env.NODE_ENV !== 'test') {
+    const PORT = process.env.PORT || 5555;
+    app.listen(PORT, () => {
+        console.log(`App is listening on port: ${PORT}`);
+    });
+}
+
+export default app;

@@ -447,3 +447,7 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+# Visual Studio and Visual Studio Code cache directory
+.vs/
+.vscode/

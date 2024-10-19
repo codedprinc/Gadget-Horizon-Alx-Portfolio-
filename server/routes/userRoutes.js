@@ -2,37 +2,44 @@ import express from "express";
 import { User } from '../models/userModel.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import authenticateToken from "../Middleware/authenticateToken.js";
 
 const router = express.Router();
 
 
-// Middleware to verify JWT token
-const authenticateToken = (req, res, next) => {
-    console.log('Headers:', req.headers);  // Log all headers
-    const authHeader = req.headers['authorization'];
-    console.log('Auth header:', authHeader);  // Log the authorization header
-
-    if (!authHeader) {
-        console.log('No auth header present');
-        return res.sendStatus(401);
-    }
-
-    const token = authHeader.split(' ')[1];
-    if (!token) {
-        console.log('No token found in auth header');
-        return res.sendStatus(401);
-    }
-
-    jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
-        if (err) {
-            console.log('JWT verification error:', err);
-            return res.sendStatus(403);
+// Register new user
+router.post('/register', async (req, res) => {
+    try {
+        const { email, password, firstName, lastName } = req.body;
+        if (!email || !password || !firstName || !lastName) {
+            return res.status(400).send({
+                message: 'Send all required fields: email, password, firstName, lastName'
+            });
         }
-        console.log('Decoded user:', user);
-        req.user = user;
-        next();
-    });
-};
+        const newUser = new User({ email, password, firstName, lastName });
+        await newUser.save();
+        const token = newUser.generateAuthToken();
+        res.status(201).send({ user: newUser, token });
+    } catch (error) {
+        res.status(500).send({ message: error.message });
+    }
+});
+
+// Login user
+router.post('/login', async (req, res) => {
+    try {
+        const { email, password } = req.body;
+        const user = await User.findOne({ email });
+        if (!user || !(await user.comparePassword(password))) {
+            return res.status(401).send({ message: 'Invalid email or password' });
+        }
+        const token = user.generateAuthToken();
+        res.send({ user, token });
+    } catch (error) {
+        res.status(500).send({ message: error.message });
+    }
+});
+
 // Get current user (protected route)
 router.get('/me', authenticateToken, async (req, res) => {
     try {
@@ -52,7 +59,7 @@ router.get('/me', authenticateToken, async (req, res) => {
 // Route for getting all users
 router.get('/', async (req, res) => {
     try {
-        const users = await User.find({});
+        const users = await User.find({}).select('-password');
 
         return res.status(200).json({
             count: users.length,
@@ -68,7 +75,7 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
     try {
         const { id } = req.params;
-        const user = await User.findById(id);
+        const user = await User.findById(id).select('-password');
 
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
@@ -108,38 +115,7 @@ router.put('/:id', async (req, res) => {
 })
 
 
-// Register new user
-router.post('/register', async (req, res) => {
-    try {
-        const { email, password, firstName, lastName } = req.body;
-        if (!email || !password || !firstName || !lastName) {
-            return res.status(400).send({
-                message: 'Send all required fields: email, password, firstName, lastName'
-            });
-        }
-        const newUser = new User({ email, password, firstName, lastName });
-        await newUser.save();
-        const token = newUser.generateAuthToken();
-        res.status(201).send({ user: newUser, token });
-    } catch (error) {
-        res.status(500).send({ message: error.message });
-    }
-});
 
-// Login user
-router.post('/login', async (req, res) => {
-    try {
-        const { email, password } = req.body;
-        const user = await User.findOne({ email });
-        if (!user || !(await user.comparePassword(password))) {
-            return res.status(401).send({ message: 'Invalid email or password' });
-        }
-        const token = user.generateAuthToken();
-        res.send({ user, token });
-    } catch (error) {
-        res.status(500).send({ message: error.message });
-    }
-});
 
 
 //Route for deleting a user
