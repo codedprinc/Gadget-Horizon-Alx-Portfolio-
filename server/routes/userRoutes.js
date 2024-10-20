@@ -5,7 +5,19 @@ import jwt from 'jsonwebtoken';
 import authenticateToken from "../Middleware/authenticateToken.js";
 
 const router = express.Router();
+// Middleware to verify JWT token and check if user is admin
+const authenticateAdmin = (req, res, next) => {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+    if (token == null) return res.sendStatus(401);
 
+    jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+        if (err) return res.sendStatus(403);
+        if (user.role !== 'admin') return res.status(403).send({ message: 'Admin access required' });
+        req.user = user;
+        next();
+    });
+};
 
 // Register new user
 router.post('/register', async (req, res) => {
@@ -57,7 +69,7 @@ router.get('/me', authenticateToken, async (req, res) => {
 
 
 // Route for getting all users
-router.get('/', async (req, res) => {
+router.get('/', authenticateAdmin, async (req, res) => {
     try {
         const users = await User.find({}).select('-password');
 

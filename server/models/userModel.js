@@ -29,6 +29,12 @@ userSchema.methods.generateAuthToken = function() {
     });
 };
 
+userSchema.methods.generateAdminAuthToken = function() {
+    return jwt.sign({ id: this._id, role: this.role = 'admin' }, process.env.JWT_SECRET, {
+        expiresIn: '1h'
+    });
+};
+
 userSchema.methods.setAdmin = function () {
     this.role = 'admin';
     return this.save();

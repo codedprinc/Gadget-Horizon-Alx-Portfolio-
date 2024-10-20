@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 
 // Middleware to verify JWT token
-const authenticateToken = (req, res, next) => {
+const authenticateAdminToken = (req, res, next) => {
     console.log('Headers:', req.headers);  // Log all headers
     const authHeader = req.headers['authorization'];
     console.log('Auth header:', authHeader);  // Log the authorization header
@@ -28,4 +28,4 @@ const authenticateToken = (req, res, next) => {
     });
 };
 
-export default authenticateToken;
+export default authenticateAdminToken;
