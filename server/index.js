@@ -7,6 +7,7 @@ import jwt from 'jsonwebtoken';
 import userRoutes from './routes/userRoutes.js';
 import adminRoutes from './routes/adminRoutes.js';
 import productRoutes from './routes/productRoutes.js';
+import importPhoneRoute from './routes/importPhoneRoute.js';
 
 dotenv.config();  //Load environment variables from .env file
 
@@ -19,6 +20,13 @@ app.use(cors());  //Handling cors policy
 app.use('/api/users', userRoutes);  //Routing to get info on  User schema
 app.use('/api/admin', adminRoutes); //Routing to get admin info
 app.use('/api/products', productRoutes); //Routing for products
+app.use('/api/products', importPhoneRoute); //Routing for phones
+
+// Global error handler
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).send('Something broke!');
+  });
 
 app.get('/', (req, res) => {
     res.status(234).send("***Welcome to Gadget Horizon ***")
