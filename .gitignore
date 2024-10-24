@@ -451,3 +451,8 @@ dist
 # Visual Studio and Visual Studio Code cache directory
 .vs/
 .vscode/
+
+
+# test files or directries
+tests/
+test_api/
