@@ -31,49 +31,73 @@ router.get('/phones/:id', async (req, res) => {
     }
 });
 
-// Product searh functionality
-router.get('/products/search', async (req, res) => {
+// Phone search functionality
+router.get('/phones/search', async (req, res) => {
     try {
-      const { name, brand, category, minPrice, maxPrice } = req.query;
-      
-      let query = {};
-  
-      if (name) {
-        query.name = { $regex: name, $options: 'i' };
-      }
-  
-      if (brand) {
-        query.brand = { $regex: brand, $options: 'i' };
-      }
-  
-      if (category) {
-        query.category = { $regex: category, $options: 'i' };
-      }
-  
-      if (minPrice || maxPrice) {
-        query.price = {};
-        if (minPrice) query.price.$gte = Number(minPrice);
-        if (maxPrice) query.price.$lte = Number(maxPrice);
-      }
-  
-      const products = await Product.find(query);
-      res.send(products);
+        console.log('Entering search route');
+        console.log('Search query:', req.query);
+        const { model, brand, series, minPrice, maxPrice } = req.query;
+
+        let query = {};
+
+        // Use 'model' instead of 'name'
+        if (model) {
+            query.model = { $regex: model, $options: 'i' };
+        }
+
+        // Search by brand
+        if (brand) {
+            query.brand = { $regex: brand, $options: 'i' };
+        }
+
+        // Search by series (if applicable)
+        if (series) {
+            query.series = { $regex: series, $options: 'i' };
+        }
+
+        // Search by price range
+        if (minPrice || maxPrice) {
+            query.price = {};
+            if (minPrice) query.price.$gte = Number(minPrice);
+            if (maxPrice) query.price.$lte = Number(maxPrice);
+        }
+        console.log('Constructed query:', query);
+        // Execute the search query
+        const phones = await Phone.find(query);
+        console.log('Search results:', phones);
+        res.status(200).json(phones);
     } catch (error) {
-      res.status(500).send({ error: 'An error occurred while searching for products.' });
+        console.error('Error during search:', error);
+        res.status(500).json({ error: 'An error occurred while searching for phones.', details: error.message });
     }
-  });
-  
+});
+
+
 
 //Route for deleting a phone
 router.delete('/phones/:id', async (req, res) => {
     try {
-        const { id } = req.params;
         const result = await Phone.findByIdAndDelete(id);
 
         if (!result) {
             return res.status(404).json({ message: 'Phone not found' });
         }
-        return res.status(200).send(result, { message: 'Phone deleted successfully' });
+        return res.status(200).json({ message: 'Phone deleted successfully', result });
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).send({ message: error.message });
+    }
+})
+
+//Route for deleting all phones
+router.delete('/phones', async (req, res) => {
+    try {
+        const result = await Phone.deleteMany({});
+
+        if (!result) {
+            return res.status(404).json({ message: 'Phones not found' });
+        }
+        return res.status(200).json({ message: 'Phone deleted successfully', result });
     } catch (error) {
         console.log(error.message);
         res.status(500).send({ message: error.message });
@@ -81,7 +105,7 @@ router.delete('/phones/:id', async (req, res) => {
 })
 
 //Create a new phone
-router.post('/products', async (req, res) => {
+router.post('/phone', async (req, res) => {
     try {
         const product = new Phone(req.body);
         await product.save();
@@ -96,17 +120,17 @@ router.post('/products', async (req, res) => {
 //     const updates = Object.keys(req.body);
 //     const allowedUpdates = ['name', 'description', 'price', 'brand', 'category', 'imageURL'];
 //     const isValidOperation = updates.every((update) => allowedUpdates.includes(update));
-  
+
 //     if (!isValidOperation) {
 //       return res.status(400).send({ error: 'Invalid updates!' });
 //     }
-  
+
 //     try {
 //       const product = await Product.findById(req.params.id);
 //       if (!product) {
 //         return res.status(404).send();
 //       }
-  
+
 //       updates.forEach((update) => product[update] = req.body[update]);
 //       await product.save();
 //       res.send(product);
