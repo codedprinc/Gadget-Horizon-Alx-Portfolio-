@@ -5,19 +5,19 @@ import authenticateAdminToken from "../Middleware/authenticateAdminToken.js";
 
 const router = express.Router();
 
-// Middleware to verify JWT token and check if user is admin
-const authenticateAdmin = (req, res, next) => {
-    const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1];
-    if (token == null) return res.sendStatus(401);
+// Register as admin
+// const authenticateAdmin = (req, res, next) => {
+//     const authHeader = req.headers['authorization'];
+//     const token = authHeader && authHeader.split(' ')[1];
+//     if (token == null) return res.sendStatus(401);
 
-    jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
-        if (err) return res.sendStatus(403);
-        if (user.role !== 'admin') return res.status(403).send({ message: 'Admin access required' });
-        req.user = user;
-        next();
-    });
-};
+//     jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+//         if (err) return res.sendStatus(403);
+//         if (user.role !== 'admin') return res.status(403).send({ message: 'Admin access required' });
+//         req.user = user;
+//         next();
+//     });
+// };
 
 // Register new admin
 router.post('/register', async (req, res) => {
@@ -38,7 +38,7 @@ router.post('/register', async (req, res) => {
     }
 });
 
-// Login user
+// Login as admin
 router.post('/login', async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -75,7 +75,7 @@ router.get('/me', authenticateAdminToken, async (req, res) => {
 });
 
 // Route to promote a user to admin status
-router.post('/promote/:userId', authenticateAdmin, async (req, res) => {
+router.post('/promote/:userId', authenticateAdminToken, async (req, res) => {
     try {
         const user = await User.findById(req.params.userId);
         if (!user) {
@@ -90,7 +90,7 @@ router.post('/promote/:userId', authenticateAdmin, async (req, res) => {
 
 
 // Route for getting all users
-router.get('/users', authenticateAdmin, async (req, res) => {
+router.get('/users', authenticateAdminToken, async (req, res) => {
     try {
         const users = await User.find({}).select('-password');
 
@@ -103,5 +103,65 @@ router.get('/users', authenticateAdmin, async (req, res) => {
         res.status(500).send({ message: error.message });
     }
 })
+
+// Route for getting a user by id
+router.get('/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const user = await User.findById(id).select('-password');
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        return res.status(200).json(user);
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).send({ message: error.message });
+    }
+})
+//Route for deleting all users
+router.delete('/all', authenticateAdminToken, async (req, res) => {
+    try {
+        // Get the current admin's ID from the JWT token
+        const currentAdminId = req.user.id; // Assuming your JWT middleware adds user info to req.user
+
+        // Delete all users except the current admin
+        const result = await User.deleteMany({
+            _id: { $ne: currentAdminId } // $ne means "not equal"
+        });
+
+        if (result.deletedCount === 0) {
+            return res.status(404).json({ 
+                message: 'No users found to delete or only admin exists' 
+            });
+        }
+        return res.status(200).json({ 
+            message: `Successfully deleted ${result.deletedCount} users`,
+            remainingAdmin: currentAdminId
+        });
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).send({ message: error.message });
+    }
+})
+
+
+//Route for deleting a user
+router.delete('/:id', authenticateAdminToken, async (req, res) => {
+    try {
+        const { id } = req.params;
+        const result = await User.findByIdAndDelete(id);
+
+        if (!result) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        return res.status(200).send({ message: 'user deleted successfully' });
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).send({ message: error.message });
+    }
+})
+
+
 
 export default router;

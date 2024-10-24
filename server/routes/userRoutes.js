@@ -6,18 +6,18 @@ import authenticateToken from "../Middleware/authenticateToken.js";
 
 const router = express.Router();
 // Middleware to verify JWT token and check if user is admin
-const authenticateAdmin = (req, res, next) => {
-    const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1];
-    if (token == null) return res.sendStatus(401);
+// const authenticateAdmin = (req, res, next) => {
+//     const authHeader = req.headers['authorization'];
+//     const token = authHeader && authHeader.split(' ')[1];
+//     if (token == null) return res.sendStatus(401);
 
-    jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
-        if (err) return res.sendStatus(403);
-        if (user.role !== 'admin') return res.status(403).send({ message: 'Admin access required' });
-        req.user = user;
-        next();
-    });
-};
+//     jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+//         if (err) return res.sendStatus(403);
+//         if (user.role !== 'admin') return res.status(403).send({ message: 'Admin access required' });
+//         req.user = user;
+//         next();
+//     });
+// };
 
 // Register new user
 router.post('/register', async (req, res) => {
@@ -56,7 +56,7 @@ router.post('/login', async (req, res) => {
 router.get('/me', authenticateToken, async (req, res) => {
     try {
         const user = await User.findById(req.user.id).select('-password');
-        
+
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
         }
@@ -67,42 +67,11 @@ router.get('/me', authenticateToken, async (req, res) => {
 });
 
 
-
-// Route for getting all users
-router.get('/', authenticateAdmin, async (req, res) => {
-    try {
-        const users = await User.find({}).select('-password');
-
-        return res.status(200).json({
-            count: users.length,
-            data: users
-        });
-    } catch (error) {
-        console.log(error.message);
-        res.status(500).send({ message: error.message });
-    }
-})
-
-// Route for getting a user by id
-router.get('/:id', async (req, res) => {
-    try {
-        const { id } = req.params;
-        const user = await User.findById(id).select('-password');
-
-        if (!user) {
-            return res.status(404).json({ message: 'User not found' });
-        }
-        return res.status(200).json(user);
-    } catch (error) {
-        console.log(error.message);
-        res.status(500).send({ message: error.message });
-    }
-})
-
 // Route for updating a user by id
-router.put('/:id', async (req, res) => {
+router.put('/update-profile', authenticateToken, async (req, res) => {
     try {
-        const { id } = req.params;
+        // Get user ID from the token instead of params
+        const userId = req.user.id;
         const { password, ...updateData } = req.body;
 
         const updatedFields = { ...updateData };
@@ -112,38 +81,28 @@ router.put('/:id', async (req, res) => {
             updatedFields.password = await bcrypt.hash(password, 12);
         }
 
-        const result = await User.findByIdAndUpdate(id, updatedFields, { new: true, runValidators: true });
+        const result = await User.findByIdAndUpdate(
+            userId,
+            updatedFields,
+            { new: true, runValidators: true }
+        ).select('-password');
 
         if (!result) {
             return res.status(404).json({ message: 'User not found' });
         }
-        return res.status(200).send({ message: 'User updated successfully', user: result });
+        return res.status(200).send({ message: 'Profile updated successfully', user: result });
 
 
     } catch (error) {
-        console.log(error.message);
-        res.status(500).send({ message: error.message });
+        console.error('Error updating profile:', error);
+        res.status(500).json({
+            message: 'Error updating profile',
+            error: error.message
+        });
     }
 })
 
 
 
-
-
-//Route for deleting a user
-router.delete('/:id', async (req, res) => {
-    try {
-        const { id } = req.params;
-        const result = await User.findByIdAndDelete(id);
-
-        if (!result) {
-            return res.status(404).json({ message: 'User not found' });
-        }
-        return res.status(200).send({ message: 'user deleted successfully' });
-    } catch (error) {
-        console.log(error.message);
-        res.status(500).send({ message: error.message });
-    }
-})
 
 export default router;

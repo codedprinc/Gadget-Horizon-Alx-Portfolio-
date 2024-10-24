@@ -8,6 +8,8 @@ import userRoutes from './routes/userRoutes.js';
 import adminRoutes from './routes/adminRoutes.js';
 import productRoutes from './routes/productRoutes.js';
 import importPhoneRoute from './routes/importPhoneRoute.js';
+import orderRoutes from './routes/orderRoutes.js';
+
 
 dotenv.config();  //Load environment variables from .env file
 
@@ -21,6 +23,7 @@ app.use('/api/users', userRoutes);  //Routing to get info on  User schema
 app.use('/api/admin', adminRoutes); //Routing to get admin info
 app.use('/api/products', productRoutes); //Routing for products
 app.use('/api/products', importPhoneRoute); //Routing for phones
+app.use('/api/orders', orderRoutes); //Routing for orders
 
 // Global error handler
 app.use((err, req, res, next) => {

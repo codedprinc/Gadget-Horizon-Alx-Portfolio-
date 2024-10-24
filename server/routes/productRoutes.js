@@ -1,12 +1,12 @@
 import express from "express";
 import { Phone } from "../models/phoneModel.js";
-
+import authenticateAdminToken from "../Middleware/authenticateAdminToken.js";
 
 const router = express.Router();
 
 
 // Get all phones
-router.get('/phones', async (req, res) => {
+router.get('/phones', authenticateAdminToken, async (req, res) => {
     try {
         const phones = await Phone.find();
         if (!phones) {
