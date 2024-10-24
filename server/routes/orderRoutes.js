@@ -89,7 +89,7 @@ router.post('/', authenticateToken, async (req, res) => {
 
 
 // Get order history for authenticated user
-router.get('/history', async (req, res) => {
+router.get('/history', authenticateToken, async (req, res) => {
     try {
         const orders = await Order.find({ user: req.user._id })
             .populate('items.phone', 'brand model price images') // Only select necessary fields
@@ -105,75 +105,6 @@ router.get('/history', async (req, res) => {
         res.status(500).json({
             success: false,
             message: 'Error fetching order history',
-            error: error.message
-        });
-    }
-});
-
-// Get specific order details
-router.get('/:orderId', async (req, res) => {
-    try {
-        const order = await Order.findOne({
-            _id: req.params.orderId,
-            user: req.user._id
-        }).populate('items.phone');
-
-        if (!order) {
-            return res.status(404).json({
-                success: false,
-                message: 'Order not found'
-            });
-        }
-
-        res.json({
-            success: true,
-            data: order
-        });
-
-    } catch (error) {
-        console.error('Error fetching order details:', error);
-        res.status(500).json({
-            success: false,
-            message: 'Error fetching order details',
-            error: error.message
-        });
-    }
-});
-
-// Update order status (admin only)
-router.patch('/:orderId/status', async (req, res) => {
-    try {
-        if (req.user.role !== 'admin') {
-            return res.status(403).json({
-                success: false,
-                message: 'Only admins can update order status'
-            });
-        }
-
-        const { status } = req.body;
-        const order = await Order.findByIdAndUpdate(
-            req.params.orderId,
-            { status },
-            { new: true }
-        );
-
-        if (!order) {
-            return res.status(404).json({
-                success: false,
-                message: 'Order not found'
-            });
-        }
-
-        res.json({
-            success: true,
-            data: order
-        });
-
-    } catch (error) {
-        console.error('Error updating order status:', error);
-        res.status(500).json({
-            success: false,
-            message: 'Error updating order status',
             error: error.message
         });
     }
@@ -220,9 +151,46 @@ router.get('/all', authenticateToken, async (req, res) => {
     }
 });
 
-// Update order status (admin only)
-router.patch('/:orderId/status', authenticateToken, async (req, res) => {
+// Get specific order details
+router.get('/:orderId', async (req, res) => {
     try {
+        const order = await Order.findOne({
+            _id: req.params.orderId,
+            user: req.user._id
+        }).populate('items.phone');
+
+        if (!order) {
+            return res.status(404).json({
+                success: false,
+                message: 'Order not found'
+            });
+        }
+
+        res.json({
+            success: true,
+            data: order
+        });
+
+    } catch (error) {
+        console.error('Error fetching order details:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error fetching order details',
+            error: error.message
+        });
+    }
+});
+
+// Update order status (admin only)
+router.patch('/:orderId/status', authenticateAdminToken, async (req, res) => {
+    try {
+        if (req.user.role !== 'admin') {
+            return res.status(403).json({
+                success: false,
+                message: 'Only admins can update order status'
+            });
+        }
+
         const { status } = req.body;
         const order = await Order.findByIdAndUpdate(
             req.params.orderId,
@@ -241,7 +209,9 @@ router.patch('/:orderId/status', authenticateToken, async (req, res) => {
             success: true,
             data: order
         });
+
     } catch (error) {
+        console.error('Error updating order status:', error);
         res.status(500).json({
             success: false,
             message: 'Error updating order status',
@@ -249,6 +219,37 @@ router.patch('/:orderId/status', authenticateToken, async (req, res) => {
         });
     }
 });
+
+
+// // Update order status (admin only)
+// router.patch('/:orderId/status', authenticateToken, async (req, res) => {
+//     try {
+//         const { status } = req.body;
+//         const order = await Order.findByIdAndUpdate(
+//             req.params.orderId,
+//             { status },
+//             { new: true }
+//         );
+
+//         if (!order) {
+//             return res.status(404).json({
+//                 success: false,
+//                 message: 'Order not found'
+//             });
+//         }
+
+//         res.json({
+//             success: true,
+//             data: order
+//         });
+//     } catch (error) {
+//         res.status(500).json({
+//             success: false,
+//             message: 'Error updating order status',
+//             error: error.message
+//         });
+//     }
+// });
 
 
 export default router;
