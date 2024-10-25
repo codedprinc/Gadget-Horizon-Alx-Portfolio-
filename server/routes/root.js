@@ -11,4 +11,8 @@ router.get('^/$|/index(.html)?', (req, res) => {
     res.sendFile(path.join(__dirname, '..', 'views', 'index.html'))
 });
 
+router.get('^/api/admin$', (req, res) => {
+    res.sendFile(path.join(__dirname, '..', 'views', 'adminDashboard.html'))
+});
+
 export default router;
