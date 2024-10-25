@@ -4,6 +4,11 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import cors from 'cors';
 import mongoose from "mongoose";
+import { logger } from "./Middleware/logger.js";
+import errorHandler from "./Middleware/errorHandler.js";
+import cookieParser from "cookie-parser";
+import corsOptions from './config/corsOptions.js';
+
 import jwt from 'jsonwebtoken';
 
 import rootRoute from './routes/root.js';
@@ -23,10 +28,13 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 //Middleware
+app.use(logger);
 app.use('/', express.static(path.join(__dirname, '/public'))); //look inside the public folder and look for static files
 app.use('/', rootRoute);
-app.use(express.json());  //Parsing request body
+app.use(express.json());//Parsing request body
+app.use(cookieParser);  
 app.use(cors());  //Handling cors policy
+// app.use(cors(corsOptions));
 app.use('/api/users', userRoutes);  //Routing to get info on  User schema
 app.use('/api/admin', adminRoutes); //Routing to get admin info
 app.use('/api/products', productRoutes); //Routing for products
@@ -50,9 +58,8 @@ app.use((err, req, res, next) => {
     res.status(500).send('Something broke!');
   });
 
-app.get('/', (req, res) => {
-    res.status(234).send("***Welcome to Gadget Horizon ***")
-})
+app.use(errorHandler);
+
 
 
 
