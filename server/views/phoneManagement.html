@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Phone Management - Gadget Horizon</title>
+    <link rel="stylesheet" href="css/styles2.css">
+</head>
+<body>
+    <div class="header">
+        <h1>Phone Management</h1>
+        <a href="/admin/dashboard.html" class="back-button">Back to Dashboard</a>
+    </div>
+    
+    <div class="container">
+        <form class="phone-form" action="/api/products/phone" method="POST">
+            <div class="form-group">
+                <label for="brand">Brand</label>
+                <input type="text" id="brand" name="brand" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="series">Series</label>
+                <input type="text" id="series" name="series" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="model">Model</label>
+                <input type="text" id="model" name="model" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="releaseYear">Release Year</label>
+                <input type="number" id="releaseYear" name="releaseYear" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="displaySize">Display Size</label>
+                <input type="number" step="0.1" id="displaySize" name="specs[display][size]" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="resolution">Display Resolution</label>
+                <input type="text" id="resolution" name="specs[display][resolution]" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="displayType">Display Type</label>
+                <input type="text" id="displayType" name="specs[display][type]" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="mainCamera">Main Camera</label>
+                <input type="text" id="mainCamera" name="specs[camera][main]" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="selfieCamera">Selfie Camera</label>
+                <input type="text" id="selfieCamera" name="specs[camera][selfie]" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="processor">Processor</label>
+                <input type="text" id="processor" name="specs[processor]" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="ram">RAM</label>
+                <input type="text" id="ram" name="specs[ram]" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="storage">Storage</label>
+                <input type="text" id="storage" name="specs[storage]" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="battery">Battery</label>
+                <input type="text" id="battery" name="specs[battery]" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="price">Price</label>
+                <input type="number" step="0.01" id="price" name="price" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="inStock">Stock Status</label>
+                <select id="inStock" name="inStock" required>
+                    <option value="true">In Stock</option>
+                    <option value="false">Out of Stock</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="images">Image URLs (comma-separated)</label>
+                <textarea id="images" name="images" required></textarea>
+            </div>
+            
+            <button type="submit" class="submit-btn">Add Phone</button>
+        </form>
+    </div>
+</body>
+</html>
