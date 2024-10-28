@@ -1,15 +1,19 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState , Suspense  } from 'react';
 import Navbar from '../components/Navbar';
-import Article from '../components/Article';
+// import Article from '../components/Article';
 import Dropdowns from '../components/Dropdowns';
 import Footer from '../components/Footer';
+import Loading from '../components/Loading';
+
+const Article = React.lazy(() => import('../components/Article'));
+
 const Home = () => {
     return (
         <div className="flex flex-col min-h-screen">
             <header>
                 <Navbar />
             </header>
-            <body className="flex-1 py-5 px-1">
+            <body className="flex-1 py-5 px-1 mb-auto">
                 <section className="mb-4">
                     <div className="max-w-7xl flex-1 mx-auto p-4 mt-6">
                         <div className="rounded-xl p-8 bg-gray-100">
@@ -22,7 +26,7 @@ const Home = () => {
                                     </button>
                                 </div>
                                 <img
-                                    src="/api/placeholder/400/300"
+                                    src="../assets/Gadget Horizon logo.png"
                                     alt="Featured Product"
                                     className="rounded-lg"
                                 />
@@ -36,6 +40,7 @@ const Home = () => {
                 </section>
                 <section className='flex flex-row flex-wrap justify-center w-full mb-4'>
                     <h6 className='text-3xl font-bold w-full ml-10 my-[0.67em] '> Phones for you</h6>
+                    <Suspense fallback={<Loading />}>
                     <Article />
                     <Article />
                     <Article />
@@ -44,6 +49,8 @@ const Home = () => {
                     <Article />
                     <Article />
                     <Article />
+                    </Suspense>
+                    
 
                 </section>
             </body>

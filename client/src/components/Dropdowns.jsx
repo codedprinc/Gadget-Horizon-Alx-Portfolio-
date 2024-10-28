@@ -2,7 +2,7 @@ import React from 'react'
 
 const Dropdowns = () => {
     return (
-        <div className='md:w-1/2 mx-auto' >
+        <div className='md:w-1/2 mx-auto hidden md:hidden' >
             <div className='flex flex-wrap justify-between items-center'>
                 <div>
                     <select name="categories" id="categories">

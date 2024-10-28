@@ -48,8 +48,9 @@ const Navbar = () => {
 
                     {/* Links - shown as a dropdown on small screens */}
                     <div className="hidden md:flex space-x-4">
-                        <a href="#" className="text-white hover:text-gray-300">Home</a>
-                        <a href="#" className="text-white bg-blue-500 hover:text-gray-300">About us</a>
+                        <a href="/home" className="text-white hover:text-gray-300">Home</a>
+                        <a href="/login" className="text-white hover:text-gray-300">Login / Register</a>
+                        <a href="/about-us" className="text-white  hover:text-gray-300">About us</a>
                         
                     </div>
 
