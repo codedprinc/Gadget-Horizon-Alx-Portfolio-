@@ -1,72 +1,56 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import Spinner from '../components/Spinner';
-import { Link } from 'react-router-dom';
-import { AiOutlineEdit } from 'react-icons/ai';
-import { BsInfoCircle } from 'react-icons/bs';
-import { MdOutlineAddBox, MdOutlineDelete } from 'react-icons/md';
-import BooksTable from '../components/home/BooksTable';
-import BooksCard from '../components/home/BooksCard';
+import Navbar from '../components/Navbar';
+import Article from '../components/Article';
+import Dropdowns from '../components/Dropdowns';
+import Footer from '../components/Footer';
 const Home = () => {
-    const [books, setBooks] = useState([]);
-    const [loading, setLoading] = useState(false);
-    const [showType, setShowType] = useState('table');
-
-    useEffect(() => {
-        const fetchBooks = async () => {
-            setLoading(true);
-            try {
-                const response = await axios.get("http://localhost:5555/books");
-                setBooks(response.data.data);
-                console.log(response.data.data);
-            } catch (error) {
-                console.log(error);
-                //
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchBooks();
-        // axios
-        //     .get('http://localhost:5555/books')
-        //     .then((response) => {
-
-        //         setLoading(false);
-        //     })
-        //     .catch((error) => {
-        //         console.log(error);
-        //         setLoading(false);
-        //     });
-    }, []);
     return (
-        <div className='p-4'>
-            <div className='flex justify-center items-center gap-x-4'>
-                <button className='bg-sky-300 hover:bg-sky-600 px-4 py-1 rounded-lg'
-                onClick={() => setShowType('table')}
-                >
-                    Table
-                </button>
-                <button className='bg-sky-300 hover:bg-sky-600 px-4 py-1 rounded-lg'
-                onClick={() => setShowType('card')}
-                >
-                    Card
-                </button>
+        <div className="flex flex-col min-h-screen">
+            <header>
+                <Navbar />
+            </header>
+            <body className="flex-1 py-5 px-1">
+                <section className="mb-4">
+                    <div className="max-w-7xl flex-1 mx-auto p-4 mt-6">
+                        <div className="rounded-xl p-8 bg-gray-100">
+                            <div className="flex items-center justify-between">
+                                <div className="space-y-4">
+                                    <h2 className="text-3xl font-bold">Special Offer</h2>
+                                    <p className="text-xl">Get Up to 50% Off<br />On Selected Gadgets</p>
+                                    <button className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">
+                                        Shop Now
+                                    </button>
+                                </div>
+                                <img
+                                    src="/api/placeholder/400/300"
+                                    alt="Featured Product"
+                                    className="rounded-lg"
+                                />
+                            </div>
+                        </div>
+                    </div>
 
-            </div>
-            <div className='flex justify-between items-center'>
-                <h1 className='text-3xl my-8'>Books List</h1>
-                <Link to='/books/create'>
-                    <MdOutlineAddBox className='text-sky-800 text-4xl' />
-                </Link>
-            </div>
-            {loading ? (
-                <Spinner />
-            ) : showType === 'table' ? (
-                <BooksTable books={books} />
-            ) : (
-                <BooksCard books={books} />
-            )}
-        </div>
+                </section>
+                <section className="mb-4">
+                    <Dropdowns />
+                </section>
+                <section className='flex flex-row flex-wrap justify-center w-full mb-4'>
+                    <h6 className='text-3xl font-bold w-full ml-10 my-[0.67em] '> Phones for you</h6>
+                    <Article />
+                    <Article />
+                    <Article />
+                    <Article />
+                    <Article />
+                    <Article />
+                    <Article />
+                    <Article />
+
+                </section>
+            </body>
+            <footer>
+                <Footer ></Footer>
+            </footer>
+        </div >
     )
 
 };
