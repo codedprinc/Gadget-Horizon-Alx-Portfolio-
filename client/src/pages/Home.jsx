@@ -1,11 +1,12 @@
 import React, { useEffect, useState , Suspense  } from 'react';
 import Navbar from '../components/Navbar';
-// import Article from '../components/Article';
 import Dropdowns from '../components/Dropdowns';
 import Footer from '../components/Footer';
-import Loading from '../components/Loading';
+//import Loading from '../components/Loading';
+//import Article from '../components/Article';
+import ProductList from '../components/ProductList';
 
-const Article = React.lazy(() => import('../components/Article'));
+
 
 const Home = () => {
     return (
@@ -40,18 +41,11 @@ const Home = () => {
                 </section>
                 <section className='flex flex-row flex-wrap justify-center w-full mb-4'>
                     <h6 className='text-3xl font-bold w-full ml-10 my-[0.67em] '> Phones for you</h6>
-                    <Suspense fallback={<Loading />}>
-                    <Article />
-                    <Article />
-                    <Article />
-                    <Article />
-                    <Article />
-                    <Article />
-                    <Article />
-                    <Article />
-                    </Suspense>
+                    {/* <Suspense fallback={<Loading />}>
                     
-
+                    </Suspense> */}
+                    {/* <ProductList /> */}
+                    
                 </section>
             </body>
             <footer>

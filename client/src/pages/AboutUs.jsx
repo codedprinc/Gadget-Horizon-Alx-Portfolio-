@@ -25,7 +25,7 @@ const AboutUs = () => {
                         </p>
                     </div>
                     <div className="mt-8">
-                        <img src="https://via.placeholder.com/600x400" alt="Gadget Horizon" className="rounded-lg shadow-lg" />
+                        <img src="../assets/Gadget Horizon logo.png" alt="Gadget Horizon" className="rounded-lg shadow-lg" />
                     </div>
                 </div>
             </div>
