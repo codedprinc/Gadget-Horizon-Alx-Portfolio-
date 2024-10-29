@@ -136,8 +136,49 @@ import React, { useState } from 'react'
 import axios from 'axios';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
+import { useAuth } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 const LoginPage = () => {
+    // const [isLogin, setIsLogin] = useState(true);
+    // const [formData, setFormData] = useState({
+    //     email: '',
+    //     password: '',
+    //     firstName: '',
+    //     lastName: '',
+    // });
+
+    // // Fixed function name and property accessor
+    // const handleInputChange = (e) => {
+    //     setFormData({ ...formData, [e.target.name]: e.target.value });
+    // };
+
+    // const handleSubmit = async (e) => {
+    //     e.preventDefault();
+
+    //     try {
+    //         const response = await axios.post(
+    //             `http://localhost:5555/api/${isLogin ? 'users/login' : 'users/register'}`,
+    //             formData,
+    //             {
+    //                 headers: {
+    //                     'Content-Type': 'application/json'
+    //                 }
+    //             }
+    //         );
+
+    //         localStorage.setItem('userToken', response.data.token);
+            
+    //         // Fixed redirect URL - should be a route path, not a file path
+    //         window.location.href = "/";
+
+    //     } catch (error) {
+    //         console.error('Error:', error.response?.data || error.message);
+    //     }
+    // }
+
+    const { login } = useAuth();
+    const navigate = useNavigate();
     const [isLogin, setIsLogin] = useState(true);
     const [formData, setFormData] = useState({
         email: '',
@@ -146,34 +187,27 @@ const LoginPage = () => {
         lastName: '',
     });
 
-    // Fixed function name and property accessor
     const handleInputChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
         try {
-            const response = await axios.post(
-                `http://localhost:5555/api/${isLogin ? 'users/login' : 'users/register'}`,
-                formData,
-                {
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                }
-            );
-
-            localStorage.setItem('userToken', response.data.token);
-            
-            // Fixed redirect URL - should be a route path, not a file path
-            window.location.href = "/";
-
+            if (isLogin) {
+                await login(formData.email, formData.password);
+                navigate('/');
+            } else {
+                // Register and then login
+                await axios.post('http://localhost:5555/api/users/register', formData);
+                await login(formData.email, formData.password);
+                navigate('/');
+            }
         } catch (error) {
-            console.error('Error:', error.response?.data || error.message);
+            console.error('Error:', error.message);
         }
-    }
+    };
+
 
     return (
         <div className='flex flex-col min-h-screen'>

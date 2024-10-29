@@ -2,44 +2,14 @@ import React, { useState } from "react";
 import { FaShoppingCart } from 'react-icons/fa';
 import { MdAccountCircle } from 'react-icons/md';
 import { MdAddShoppingCart } from "react-icons/md";
+import { Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false);
+    const { user, logout } = useAuth();
     return (
-        // <>
-        //     <nav className="bg-blue-500 p-4">
-        //         <div className="container mx-auto flex justify-between items-center">
-        //         <div className="flex items-center space-x-4">
-        //             <img src="../assets/Gadget Horizon logo.png" alt="Gadget_Horizon" width={100} height={100} />
-        //             <a href="#" className="text-white font-bold text-xl">Gadget Horizon</a>
 
-        //         </div>
-        //                 <div className=" md:flex space-x-4">
-        //                     <a href="#">
-        //                         <select className="bg-blue-500 text-white hover:text-gray-300" name="categories" id="categories">
-        //                             <option value="phones"><a href="http://" target="_blank" rel="noopener noreferrer" className="text-white hover:text-gray-300">Phones</a></option>
-        //                             <option value="audio"><a href="http://" target="_blank" rel="noopener noreferrer" className="text-white hover:text-gray-300">Audio</a></option>
-        //                         </select></a>
-        //                     <a href="#" className="text-white hover:text-gray-300"> Deals </a>
-        //                     <a href="#" className="text-white hover:text-gray-300"> What's New </a>
-        //                     <a href="#" className="text-white hover:text-gray-300"> Delivery </a>
-        //                 </div>
-        //                 <div className=" rounded border  md:flex space-x-4">
-        //                     <search>
-        //                         <form>
-        //                             <input className="bg-white-500 text-white rounded border" type="text" name='search_bar' id='search_bar' placeholder=' Search ' />
-        //                         </form>
-        //                     </search>
-        //                 </div>
-        //                 <div className=" rounded border  md:flex space-x-4">
-        //                     <h6> Account </h6>
-        //                     <div>&#9678;</div>
-        //                 </div>
-        //                 <div><img src="" alt="logo/button" /><h6> Cart </h6></div>
-                    
-        //         </div>
-        //     </nav>
-        // </>
         <>
             <nav className="bg-blue-600 p-4 ">
                 <div className="container mx-auto flex justify-between items-center">
@@ -47,27 +17,57 @@ const Navbar = () => {
                     <div className="text-white font-bold text-lg">Gadget Horizon</div>
 
                     {/* Links - shown as a dropdown on small screens */}
-                    <div className="hidden md:flex space-x-4">
+                    <div className="hidden md:flex space-x-4 items-center gap-4">
                         <a href="/home" className="text-white hover:text-gray-300">Home</a>
-                        <a href="/login" className="text-white hover:text-gray-300">Login / Register</a>
                         <a href="/about-us" className="text-white  hover:text-gray-300">About us</a>
-                        
+
+                    {/* </div>
+
+                    <div className="flex items-center gap-4"> */}
+                        {user ? (
+                            <>
+                                <div className="flex items-center gap-2">
+                                    <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white">
+                                        {user.firstName[0]}
+                                    </div>
+                                    <span>{user.firstName}</span>
+                                </div>
+                                <button
+                                    onClick={logout}
+                                    className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+                                >
+                                    Logout
+                                </button>
+                            </>
+                        ) : (
+                            <Link
+                                to="/login"
+                                className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600  hover:text-gray-300"
+                            >
+                                Login
+                            </Link>
+                        )}
+
                     </div>
 
-                    {/* Search bar */}
+                    {/* Search bar
                     <div className="hidden md:hidden">
                         <input
                             type="text"
                             placeholder="Search Product"
                             className="p-2 rounded border w-48 focus:outline-none focus:ring-2 focus:ring-blue-400"
                         />
-                    </div>
+                    </div> */}
 
                     {/* Account and Cart icons */}
                     <div className="hidden md:flex space-x-4 text-white">
+                        <Link to="/cart" className="relative">
+                            {/* <span className="material-icons text-white hover:text-gray-300">shopping_cart</span> */}
+                            <FaShoppingCart className="text-xl" />
+                            {/* Add cart items count here when we implement cart */}
+                        </Link>
                         
-                        <a href="#" className="hover:text-gray-300"><FaShoppingCart className="text-xl" /></a>
-                        <a href="#" target="_blank" rel="noopener noreferrer"><MdAccountCircle className="text-xl"/></a>
+                        <a href="#" target="_blank" rel="noopener noreferrer"><MdAccountCircle className="text-xl" /></a>
                     </div>
 
                     {/* Mobile Menu Button */}
@@ -85,8 +85,8 @@ const Navbar = () => {
                         <a href="#" className="block text-white hover:text-gray-300">Home</a>
                         <a href="#" className="block text-white hover:text-gray-300">About us</a>
                         <a href="#" className="hover:text-gray-300 text-white "><FaShoppingCart className="text-xl my-2" /></a>
-                        <a href="#" target="_blank" rel="noopener noreferrer" className="text-white"><MdAccountCircle className="text-xl my-2"/></a>
-                        
+                        <a href="#" target="_blank" rel="noopener noreferrer" className="text-white"><MdAccountCircle className="text-xl my-2" /></a>
+
                     </div>
                 )}
             </nav>
