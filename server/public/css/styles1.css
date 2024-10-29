@@ -67,3 +67,17 @@ body {
 .dashboard-card a:hover {
     background-color: #2980b9;
 }
+
+.submit-btn {
+    margin-top: 10px;
+    padding: 10px 20px;
+    background-color: var(--accent-color);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.submit-btn:hover {
+    background-color: #2980b9;
+}

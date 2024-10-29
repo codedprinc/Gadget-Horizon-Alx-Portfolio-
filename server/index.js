@@ -6,7 +6,6 @@ import cors from 'cors';
 import mongoose from "mongoose";
 import { logger } from "./Middleware/logger.js";
 import errorHandler from "./Middleware/errorHandler.js";
-import cookieParser from "cookie-parser";
 import corsOptions from './config/corsOptions.js';
 
 import jwt from 'jsonwebtoken';
@@ -29,12 +28,12 @@ const __dirname = path.dirname(__filename);
 
 //Middleware
 app.use(logger);
-app.use('/', express.static(path.join(__dirname, '/public'))); //look inside the public folder and look for static files
-app.use('/', rootRoute);
-app.use(express.json());//Parsing request body
-app.use(cookieParser);  
+app.use(express.json());//Parsing request body  
 app.use(cors());  //Handling cors policy
 // app.use(cors(corsOptions));
+
+app.use('/', express.static(path.join(__dirname, '/public'))); //look inside the public folder and look for static files
+app.use('/', rootRoute);
 app.use('/api/users', userRoutes);  //Routing to get info on  User schema
 app.use('/api/admin', adminRoutes); //Routing to get admin info
 app.use('/api/products', productRoutes); //Routing for products
@@ -42,21 +41,21 @@ app.use('/api/products', importPhoneRoute); //Routing for phones
 app.use('/api/orders', orderRoutes); //Routing for orders
 
 
-app.all('*', (req, res) => {
-    res.status(404)
-    if (req.accepts('html')) {
-        res.sendFile(path.join(__dirname, 'views', '404.html'))
-    } else if (req.accepts('json')) {
-        res.json({ message: '404 Not Found'});
-    } else {
-        res.type('txt').send('404 Not Found');
-    }
-})
-// Global error handler
-app.use((err, req, res, next) => {
-    console.error(err.stack);
-    res.status(500).send('Something broke!');
-  });
+// app.all('*', (req, res) => {
+//     res.status(404)
+//     if (req.accepts('html')) {
+//         res.sendFile(path.join(__dirname, 'views', '404.html'))
+//     } else if (req.accepts('json')) {
+//         res.json({ message: '404 Not Found'});
+//     } else {
+//         res.type('txt').send('404 Not Found');
+//     }
+// })
+// // Global error handler
+// app.use((err, req, res, next) => {
+//     console.error(err.stack);
+//     res.status(500).send('Something broke!');
+//   });
 
 // app.use(errorHandler);
 

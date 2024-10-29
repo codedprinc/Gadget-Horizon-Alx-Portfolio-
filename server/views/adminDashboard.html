@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Admin Dashboard - Gadget Horizon</title>
-    <link rel="stylesheet" href="css/styles1.css">
+    <link rel="stylesheet" href="/css/styles1.css">
 </head>
 <body>
     <div class="header">
@@ -16,27 +16,37 @@
             <div class="dashboard-card">
                 <h2>Phone Management</h2>
                 <p>Add, edit, or remove phones from inventory</p>
-                <a href="/admin/phones.html">Manage Phones</a>
+                <a href="/api/admin/phones">Manage Phones</a>
             </div>
             
-            <div class="dashboard-card">
-                <h2>Order Management</h2>
-                <p>View and manage customer orders</p>
-                <a href="/admin/orders.html">Manage Orders</a>
-            </div>
             
             <div class="dashboard-card">
                 <h2>User Management</h2>
                 <p>Manage user accounts and permissions</p>
-                <a href="/admin/users.html">Manage Users</a>
+                <a href="/api/admin/users">Manage Users</a>
             </div>
             
             <div class="dashboard-card">
                 <h2>Import Data</h2>
                 <p>Import phone data from CSV</p>
-                <a href="/admin/import.html">Import Data</a>
+                
+                <button onclick="getCurrentUser()" class="submit-btn">Import Data</button>
             </div>
         </div>
     </div>
+    <script>
+        async function getCurrentUser() {
+            const token = localStorage.getItem('userToken');
+            console.log(`${token}`);
+            const response = await fetch('http://localhost:5555/api/products/phones/import-phones', {
+                method: 'POST'
+            });
+            const data = await response.json();
+            if (data){
+                alert('Phones imported')
+            }
+            console.log(':', data);
+        }
+    </script>
 </body>
 </html>
